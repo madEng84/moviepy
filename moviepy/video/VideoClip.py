@@ -15,13 +15,11 @@ from tqdm import tqdm
 
 from ..Clip import Clip
 from ..compat import DEVNULL, PY3
-from ..config import get_setting
 from ..decorators import (add_mask_if_none, apply_to_mask,
                           convert_masks_to_RGB, convert_to_seconds, outplace,
                           requires_duration, use_clip_fps_by_default)
 from ..tools import (deprecated_version_of, extensions_dict, find_extension,
                      is_string, subprocess_call, verbose_print)
-from .io.ffmpeg_writer import ffmpeg_write_video
 from .io.gif_writers import (write_gif, write_gif_with_image_io,
                              write_gif_with_tempfiles)
 from .tools.drawing import blit
@@ -253,6 +251,7 @@ class VideoClip(Clip):
         >>> clip.close()
 
         """
+        from .io.ffmpeg_writer import ffmpeg_write_video
         name, ext = os.path.splitext(os.path.basename(filename))
         ext = ext[1:].lower()
 
@@ -1101,7 +1100,7 @@ class TextClip(ImageClip):
                  tempfilename=None, temptxt=None,
                  transparent=True, remove_temp=True,
                  print_cmd=False):
-
+        from ..config import get_setting
         if txt is not None:
             if temptxt is None:
                 temptxt_fd, temptxt = tempfile.mkstemp(suffix='.txt')
@@ -1175,7 +1174,7 @@ class TextClip(ImageClip):
     def list(arg):
         """Returns the list of all valid entries for the argument of
         ``TextClip`` given (can be ``font``, ``color``, etc...) """
-
+        from ..config import get_setting
         popen_params = {"stdout": sp.PIPE,
                         "stderr": DEVNULL,
                         "stdin": DEVNULL}
